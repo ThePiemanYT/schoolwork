@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Task Tracker</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer&display=swap');
+  
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+  
+    h1 {
+      font-family: 'Noto Sans Khmer', sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+  
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background-color: #1e1e1e;
+      font-size: 15.57px;
+      color: #ffffff;
+      table-layout: fixed; /* Makes columns even */
+    }
+  
+    th, td {
+      border: 1px solid #333333;
+      padding: 8px;
+      text-align: center;
+      word-wrap: break-word; /* Ensures text breaks properly in small screens */
+    }
+  
+    th {
+      background-color: #2a2a2a;
+    }
+  
+    button {
+      padding: 5px 10px;
+      margin: 2px;
+      cursor: pointer;
+      border: none;
+      color: #ffffff;
+    }
+  
+    .done {
+      background-color: #4caf50;
+    }
+  
+    .student-name {
+      font-family: 'Noto Sans Khmer', sans-serif;
+    }
+  
+    td:hover {
+      background-color: #444444;
+      cursor: pointer;
+    }
+  
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      table {
+        font-size: 12px;
+      }
+  
+      th, td {
+        padding: 6px;
+      }
+    }
+  
+    @media (max-width: 768px) {
+      table {
+        font-size: 10px;
+      }
+  
+      th, td {
+        padding: 4px;
+      }
+  
+      /* Add horizontal scroll for the table */
+      .table-container {
+        overflow-x: auto;
+      }
+    }
+  
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 18px;
+      }
+  
+      table {
+        font-size: 8px;
+      }
+  
+      th, td {
+        padding: 3px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>បញ្ជីរៀនគួរគណិតវិទ្យា</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Student Name</th>
+        <th>January</th>
+        <th>February</th>
+        <th>March</th>
+        <th>April</th>
+        <th>May</th>
+        <th>June</th>
+        <th>July</th>
+        <th>August</th>
+        <th>September</th>
+        <th>October</th>
+        <th>November</th>
+        <th>December</th>
+      </tr>
+    </thead>
+    <tbody id="studentTable">
+      <!-- Rows will be generated dynamically -->
+    </tbody>
+  </table>
+
+  <script>
+    const students = [
+      { name: "ចំ​រើន វាសនា​" },
+      { name: "ចេន ស្រីណុច" },
+      { name: "ឆន គីមហួ" },
+      { name: "ជិន កុលវតី" },
+      { name: "ឈួន លីនាង" },
+      { name: "ប៉ែន រស្មីកញ្ញា" },
+      { name: "ប៊ុន គីមហេង" },
+      { name: "ផ្លេក វិច្ឆិកា" },
+      { name: "ភឹម គីមហុង" },
+      { name: "លីម ប៊ុនប៉ាវ" },
+      { name: "វុធ ធិតាទេពី" },
+      { name: "សរ ស្រីចេន" },
+      { name: "សយ សុវណ្ណមុនីលាភ" },
+      { name: "ស៊ា ជីវ័ន្ត" },
+      { name: "ស៊ាម សេងឡុង" },
+      { name: "សុីថា លីហឿន" },
+      { name: "សុឹប សីហៃ" },
+      { name: "សុឹម ច័ន្ទវិបុល" },
+      { name: "សុឹម លាងហុង" },
+      { name: "ស៊ុយ សុីវឡាង" },
+      { name: "ស៊ុំ ចាន់ចម" },
+      { name: "សឹង្ហ កេតសានី" },
+      { name: "សុខ ចាន់ចំរើន" },
+      { name: "សុចិត្ត កុលសុវណ្ណ" },
+      { name: "សៀង សាប្រ៊ីណា" },
+      { name: "សេង សែសុម៉ាលីតា" },
+      { name: "សែ ឆៃហួត" },
+      { name: "សៅ សុងហេង" },
+      { name: "សំណាង ឧត្តម" },
+      { name: "សំអុល កញ្ចនី" },
+      { name: "ហ៊ួ ម៉េងហុក" },
+      { name: "ហេង គឹមហៀក" },
+      { name: "ហេង លីដាណា" },
+      { name: "អុឹង គីមហៀក" },
+      { name: "អុឹង សុខសុវណ្ណរាជ្យ" },
+      { name: "អុឹង ស្រីទូច" },
+      { name: "អ៊ុង រស្មី" },
+    ];
+
+    const tableBody = document.getElementById('studentTable');
+
+    // Load progress from localStorage
+    const progress = JSON.parse(localStorage.getItem('progress')) || {};
+
+    const updateCell = (cell, monthKey, isDone) => {
+      if (isDone) {
+        cell.style.backgroundColor = '#2e7d32';
+        cell.style.color = '#ffffff';
+        cell.textContent = 'Done';
+        progress[monthKey] = true;
+      } else {
+        cell.style.backgroundColor = '';
+        cell.style.color = '';
+        cell.textContent = '';
+        delete progress[monthKey];
+      }
+      localStorage.setItem('progress', JSON.stringify(progress));
+    };
+
+    students.forEach((student, index) => {
+      const row = document.createElement('tr');
+      const nameCell = document.createElement('td');
+      nameCell.textContent = student.name;
+      nameCell.classList.add('student-name');
+      row.appendChild(nameCell);
+
+      for (let i = 0; i < 12; i++) {
+        const cell = document.createElement('td');
+        const monthKey = `${index}-${i}`;
+        const isDone = progress[monthKey];
+
+        if (isDone) {
+          updateCell(cell, monthKey, true);
+        }
+
+        cell.addEventListener('click', () => {
+          const currentState = progress[monthKey] || false;
+          updateCell(cell, monthKey, !currentState);
+        });
+
+        row.appendChild(cell);
+      }
+
+      tableBody.appendChild(row);
+    });
+  </script>
+</body>
+</html>
